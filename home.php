@@ -233,221 +233,85 @@ get_header();
 </section>
 <?php endwhile; endif; ?> 
 
+<section class="text-center py-5">
+    <h2>Expert Legal Support</h2>
+<?php
+// Fetching all categories for the 'services' post type
+$service_categories = get_terms(array(
+    'taxonomy' => 'services_post_cat',
+    'hide_empty' => false, // Show all categories, even those without posts
+));
 
-<!-- <section class="our-portfolio">
+?>
+
 <div class="container">
-    <div class="row align-items-center">
-        <div class="col-lg-3">
-            <div class="main-title black">
-                <h3>Our<br>Portfolio</h3>
-                <p>Lorem ipsum dolor sit
-                    amet, consectetur adipiscing
-                    elit, sed do eiusmod tempor
-                    incididuntut.</p>
-                <div class="view-all-btn">
-                    <a href="#">VIEW ALL</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-9">
-            <div class="row g-5">
-                <div class="col-lg-6">
-                    <div class="portfolio-galery">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/portfolio-img1.jpg">
-                        <div class="portfolio-text">
-                            <a href="#">Portfolio 1</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="portfolio-galery">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/portfolio-img2.jpg">
-                        <div class="portfolio-text">
-                            <a href="#">Portfolio 2</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="portfolio-galery">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/portfolio-img3.jpg">
-                        <div class="portfolio-text">
-                            <a href="#">Portfolio 3</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="portfolio-galery">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/portfolio-img4.jpg">
-                        <div class="portfolio-text">
-                            <a href="#">Portfolio 4</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="categories">
+        <h2>Categories</h2>
+<ul class="category-list">
+    <?php foreach ($service_categories as $category) : 
+        // Get the icon URL from category meta
+        $icon_url = get_term_meta($category->term_id, 'category-image-id', true);
+        ?>
+        <li>
+            <a href="#" class="category-link" data-category-id="<?php echo $category->term_id; ?>">
+                <?php if ($icon_url) : ?>
+                    <img src="<?php echo esc_url(wp_get_attachment_url($icon_url)); ?>" alt="<?php echo esc_attr($category->name); ?>" class="category-icon" style="width: 20px; height: 20px; margin-right: 5px;">
+                <?php endif; ?>
+                <?php echo esc_html($category->name); ?>
+            </a>
+        </li>
+    <?php endforeach; ?>
+</ul>
 
-        </div>
+<div class="posts">
+    <h2>Posts</h2>
+    <div id="post-content">
+        <p>Select a category to see posts.</p>
     </div>
 </div>
+
+
 </section>
-<section class="testimonial-section">
-<div class="container">
-    <div class="row">
-        <div class="main-title black text-center">
-            <h3>What People Says?</h3>
+
+
+<?php
+$category_id = 1; // Use a valid category ID here
+
+// Query the services
+$query = new WP_Query(array(
+    'post_type' => 'services',
+    'tax_query' => array(
+        array(
+            'taxonomy' => 'category',
+            'field'    => 'term_id',
+            'terms'    => $category_id,
+        ),
+    ),
+    'posts_per_page' => 5,
+));
+
+if ($query->have_posts()) {
+    while ($query->have_posts()) {
+        $query->the_post();
+        ?>
+        <div class="post-item">
+            <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+            <?php if (has_post_thumbnail()) : ?>
+                <div class="post-thumbnail">
+                    <?php the_post_thumbnail('thumbnail'); ?>
+                </div>
+            <?php endif; ?>
+            <p><?php the_excerpt(); ?></p>
         </div>
-    </div>
-    <div class="row testimnial-spacing">
-        <div class="col-lg-6 testimonial-design">
-            <section class="testimonial-slider slider">
-                <div class=" p-2">
-                    <div class="section-slider-text">
-                        <div class="iconslider">
-                            <i class="fa-solid fa-quote-left"></i>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Duis vehicula tellus nec orci tincidunt placerat et at est.
-                                Pellentesque aliquet ligula vulputate. dolor sit amet,
-                                consectetur adipiscing elit.</p>
-                            <h3>- User A</h3>
-                        </div>
+        <?php
+    }
+    wp_reset_postdata();
+} else {
+    echo '<p>No posts found in this category.</p>';
+}
 
-                    </div>
-                </div>
-                <div class="p-2">
-                    <div class="section-slider-text">
-                        <div class="iconslider">
-                            <i class="fa-solid fa-quote-left"></i>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Duis vehicula tellus nec orci tincidunt placerat et at est.
-                                Pellentesque aliquet ligula vulputate. dolor sit amet,
-                                consectetur adipiscing elit.</p>
-                            <h3>- User A</h3>
-                        </div>
+?>
 
-                    </div>
-                </div>
-                <div class="px-2 p-2">
-                    <div class="section-slider-text">
-                        <div class="iconslider">
-                            <i class="fa-solid fa-quote-left"></i>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Duis vehicula tellus nec orci tincidunt placerat et at est.
-                                Pellentesque aliquet ligula vulputate. dolor sit amet,
-                                consectetur adipiscing elit.</p>
-                            <h3>- User A</h3>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="px-2 p-2">
-                    <div class="section-slider-text">
-                        <div class="iconslider">
-                            <i class="fa-solid fa-quote-left"></i>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Duis vehicula tellus nec orci tincidunt placerat et at est.
-                                Pellentesque aliquet ligula vulputate. dolor sit amet,
-                                consectetur adipiscing elit.</p>
-                            <h3>- User A</h3>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="px-2 p-2">
-                    <div class="section-slider-text">
-                        <div class="iconslider">
-                            <i class="fa-solid fa-quote-left"></i>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Duis vehicula tellus nec orci tincidunt placerat et at est.
-                                Pellentesque aliquet ligula vulputate. dolor sit amet,
-                                consectetur adipiscing elit.</p>
-                            <h3>- User A</h3>
-                        </div>
-
-                    </div>
-                </div>
-                <div class="px-2 p-2">
-                    <div class="section-slider-text">
-                        <div class="iconslider">
-                            <i class="fa-solid fa-quote-left"></i>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                Duis vehicula tellus nec orci tincidunt placerat et at est.
-                                Pellentesque aliquet ligula vulputate. dolor sit amet,
-                                consectetur adipiscing elit.</p>
-                            <h3>- User A</h3>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-        </div>
-        <div class="col-lg-6">
-            <div class="testimoniual-img">
-                <img src="<?php echo get_template_directory_uri() ?>/img/testimoniual-img.jpg">
-            </div>
-        </div>
-    </div>
-</div>
-</section>
-<section class="our-partners">
-<div class="container">
-    <div class="row">
-        <div class="main-title black text-center">
-            <h3>Our Partners</h3>
-        </div>
-    </div>
-    <div class="row pt-lg-5 pt-md-5  mt-5 mt-md-0">
-        <section class="regular slider">
-            <div class=" p-2">
-                <div class="section-slider-text">
-                    <div class="iconslider d-flex justify-content-center">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/slider-img-1.png">
-                    </div>
-
-                </div>
-            </div>
-            <div class="p-2">
-                <div class="section-slider-text">
-                    <div class="iconslider  d-flex justify-content-center">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/slider-img-1.png">
-                    </div>
-
-                </div>
-            </div>
-            <div class="px-2 p-2">
-                <div class="section-slider-text">
-                    <div class="iconslider  d-flex justify-content-center">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/slider-img-1.png">
-                    </div>
-
-                </div>
-            </div>
-            <div class="px-2 p-2">
-                <div class="section-slider-text">
-                    <div class="iconslider  d-flex justify-content-center">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/slider-img-1.png">
-                    </div>
-
-                </div>
-            </div>
-            <div class="px-2 p-2">
-                <div class="section-slider-text">
-                    <div class="iconslider  d-flex justify-content-center">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/slider-img-1.png">
-                    </div>
-
-                </div>
-            </div>
-            <div class="px-2 p-2">
-                <div class="section-slider-text">
-                    <div class="iconslider  d-flex justify-content-center">
-                        <img src="<?php echo get_template_directory_uri() ?>/img/slider-img-1.png">
-                    </div>
-
-                </div>
-            </div>
-        </section>
-    </div>
-</div>
-</section> -->
 <?php  
 get_footer();
 ?>
