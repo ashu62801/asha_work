@@ -60,13 +60,6 @@
                     ));
                     ?>
 
-                        <!-- <ul>
-                             <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Home</a></li>
-                            <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Invandig Story</a></li>
-                            <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Portfolio</a></li>
-                            <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Contact Us</a></li>
-                            <li><a href="#"><i class="fa-solid fa-chevron-right"></i> Book an Appointment</a></li> 
-                        </ul> -->
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -177,6 +170,32 @@
         });
 
     </script>
+
+<script>
+jQuery(document).ready(function($) {
+    $('.category-link').on('click', function(e) {
+        e.preventDefault(); // Prevent the default anchor click behavior
+        
+        var categoryId = $(this).data('category-id');
+
+        // AJAX request
+        $.ajax({
+            url: '<?php echo admin_url('admin-ajax.php'); ?>',
+            type: 'POST',
+            data: {
+                action: 'load_category_posts',
+                category_id: categoryId
+            },
+            success: function(response) {
+                $('#post-content').html(response);
+            },
+            error: function() {
+                $('#post-content').html('<p>An error occurred while loading posts.</p>');
+            }
+        });
+    });
+});
+</script>
 
 </body>
 
